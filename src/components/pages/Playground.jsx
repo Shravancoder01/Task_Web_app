@@ -58,7 +58,7 @@ const Playground = () => {
         dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           <FaPlus className="text-sm" />
-          New Task
+          New Taskit 
         </button>
         
 
