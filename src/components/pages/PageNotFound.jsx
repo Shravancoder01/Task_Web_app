@@ -1,5 +1,7 @@
 import React from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
+import { Link } from "react-router-dom";
+
 
 const PageNotFound = () => {
   return (
@@ -7,7 +9,7 @@ const PageNotFound = () => {
       <h1 style={styles.title}>404</h1>
       <p style={styles.message}>Oops! The page you are looking for does not exist.</p>
       <FaExclamationTriangle style={styles.icon} />
-      <a href="/" style={styles.button}>Go Back Home</a>
+      <Link to="/" style={styles.button}>Go Back Home</Link>
     </div>
   );
 };

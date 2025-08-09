@@ -36,7 +36,7 @@ const Signin = () => {
             <p className="text-sm text-center text-gray-600 mt-4">
               {" "}Don't have an account?{" "}
               <a
-                href="/register"
+                href="/signup"
                 className="text-green-600 hover:underline"
               >
                 Sign up

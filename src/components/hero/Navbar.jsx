@@ -48,7 +48,7 @@ const Navbar = () => {
         `}
           >
             <ul className="flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 font-medium">
-              {["Sign In", "Sign Up", "Dashboard"].map((item) => (
+              {["signin", "signup", "dashboard"].map((item) => (
                 <li key={item}>
                   <Link
                     to={`/${item}`}
