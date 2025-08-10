@@ -1,6 +1,11 @@
-import React from 'react';
+import React,{useState} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserAuth } from '../../context/AuthContext';
 
 const Signin = () => {
+  const navigate = useNavigate();
+  const { session } = UserAuth();
+  console.log(session);
   return (
     <div>
       <div className="min-h-screen flex items-center justify-center bg-white px-4 py-12">

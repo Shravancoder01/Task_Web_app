@@ -11,10 +11,11 @@ const Navbar = () => {
 
         <Link to="/" className='flex items-center space-x-2'>
           <img src={TDLogo} alt="Logo" className="h-8" />
-          <span className='text-2xl font-semibold text-white whitespace-nowrap dark:text-white'>
-            Task Desk
+            <span className="text-2xl font-semibold whitespace-nowrap dark:text-white">
+             Task Desk
           </span>
         </Link>
+
         <div className="flex items-center space-x-4 md:order-2">
           <Link to="/playground" className="px-4 py-2 text-sm font-medium text-white bg-blue-700
         rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4
