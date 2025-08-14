@@ -1,23 +1,29 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../../context/AuthContext';
 
 const Signin = () => {
   const navigate = useNavigate();
-  const { session } = UserAuth();
-  const {signInUser } = UserAuth();
-  //console.log(session);
-
+  const { signInUser } = UserAuth(); // Make sure AuthContext returns both session & signInUser
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handlesSignIn = async (e) => {
-
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+    setLoading(true);
+    setError('');
+    try {
+      await signInUser(email, password); // Let it throw on failure
+      navigate('/dashboard');
+    } catch (error) {
+      setError('Invalid email or password');
+    } finally {
+      setLoading(false);
+    }
   };
-
-
-
 
   return (
     <div>
@@ -32,23 +38,35 @@ const Signin = () => {
               Please sign in to your account
             </p>
 
-            <form className="space-y-4">
+            <form onSubmit={handlesSignIn} className="space-y-4">
               <input
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 placeholder="Email"
+                value={email}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
               <input
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="Password"
+                value={password}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
               />
               <button
                 type="submit"
+                disabled={loading}
                 className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
               >
-                Sign In
+                {loading ? "Signing In..." : "Sign In"}
               </button>
+              {error && (
+                <p className="text-center text-sm font-medium text-red-700 bg-red-100 border border-red-300 rounded-md px-4 py-3 shadow-md">
+                  {error}
+                </p>
+              )}
             </form>
 
             <p className="text-sm text-center text-gray-600 mt-4">
@@ -69,7 +87,7 @@ const Signin = () => {
               className="w-full h-auto max-h-400px object-center rounded-md"
             />
           </div>
-          
+
         </div>
       </div>
     </div>
