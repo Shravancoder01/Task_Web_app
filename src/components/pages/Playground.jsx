@@ -1,45 +1,100 @@
-import React from 'react'
-import { FaPlus, FaTrashAlt } from 'react-icons/fa'
-
-const initialTasks = [
-  {
-    id: 1,
-    title: "My Notes",
-    type: "Private",
-    description: "Personal Folder",
-    labels: ["Frontend", "Urgent"],
-    priority: "Priority & Importance",
-    startDate: "2025-08-01T10:00",
-    endDate: "2025-09-01T12:00",
-    progress: 80,
-  },
-];
+import React, { useState, useEffect, useMemo } from "react";
+import { FaPlus, FaTrashAlt } from "react-icons/fa";
+import AddNewTaskModal from "./AddNewTaskModal";
+import { UserAuth } from "../../context/AuthContext";
+import { fetchTasks, createTask, deleteTask, markComplete } from "../../utils/taskService";
 
 const Playground = () => {
-  const [tasks, setTasks] = React.useState(initialTasks);
-  const [activeLabel, setActiveLabel] = React.useState(null);
-  const [sortMode, setSortMode] = React.useState("default");
+  const [tasks, setTasks] = useState([]);
+  const [activeLabel, setActiveLabel] = useState(null);
+  const [sortMode, setSortMode] = useState("default");
+  const { session } = UserAuth();
+  const userId = session?.user?.id;
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const handleDeleteTask = (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this task?");
-    if (confirmed) {
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  // Load tasks from DB
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      try {
+        setLoading(true);
+        const data = await fetchTasks(userId);
+        setTasks(data);
+      } catch (e) {
+        setError(e.message || "Failed to Load the Tasks");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [userId]);
+
+  // Create Task
+  const handleCreate = async (payload) => {
+    try {
+      await createTask(userId, payload);
+      const data = await fetchTasks(userId);
+      setTasks(data);
+    } catch (e) {
+      setError(e.message || "Failed to Create a Task");
     }
   };
 
-  const uniqueLabels = [...new Set(tasks.flatMap((task) => task.labels) || [])];
+  // Handle Task Actions
+  const handleTaskAction = async (action, id) => {
+    const prev = [...tasks];
+    if (action === "delete") {
+      const confirmed = window.confirm("Delete this task?");
+      if (!confirmed) return;
+      setTasks((curr) => curr.filter((t) => t.id !== id));
+      try {
+        await deleteTask(id);
+      } catch (e) {
+        setTasks(prev);
+        setError(e.message || "Failed to Delete the Task");
+      }
+    } else if (action === "complete") {
+      setTasks((curr) => curr.filter((t) => t.id !== id));
+      try {
+        await markComplete(id);
+      } catch (e) {
+        setTasks(prev);
+        setError(e.message || "Failed to Mark Task as Complete");
+      }
+    }
+  };
 
-  let filteredTasks = [...tasks];
-  if (activeLabel) {
-    filteredTasks = filteredTasks.filter(
-      (task) => (task.labels || []).includes(activeLabel)
-    );
-  }
-  if (sortMode === "stack") {
-    filteredTasks.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-  } else if (sortMode === "deadline") {
-    filteredTasks.sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
-  }
+  // Unique Labels
+  const uniqueLabels = useMemo(
+    () => Array.from(new Set(tasks.flatMap((task) => task.labels || []))),
+    [tasks]
+  );
+
+  // Filter + Sort
+  const FilteredTasks = useMemo(() => {
+    let list = [...tasks];
+
+    if (activeLabel) {
+      list = list.filter((t) => (t.labels || []).includes(activeLabel));
+    }
+
+    if (sortMode === "stack") {
+      list.sort(
+        (a, b) =>
+          new Date(b.stack?.date || b.created_at || 0) -
+          new Date(a.stack?.date || a.created_at || 0)
+      );
+    } else if (sortMode === "deadline") {
+      list.sort(
+        (a, b) =>
+          new Date(a.end_date || "2100-01-01") -
+          new Date(b.end_date || "2100-01-01")
+      );
+    }
+
+    return list;
+  }, [tasks, activeLabel, sortMode]);
 
   return (
     
@@ -53,13 +108,16 @@ const Playground = () => {
           </div>
         
         <button
+        onClick={() => setOpen(true)}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700
         text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300
         dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           <FaPlus className="text-sm" />
-          New Taskit
+          New Task
         </button>
+        <AddNewTaskModal 
+        open={open} onClose={() => setOpen(false)} onCreate={handleCreate}/>
         
 
         </div>
