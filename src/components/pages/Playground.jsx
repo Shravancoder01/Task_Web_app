@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { FaPlus, FaTrashAlt } from "react-icons/fa";
+import { FaCheckCircle, FaPlus, FaTrashAlt } from "react-icons/fa";
 import AddNewTaskModal from "./AddNewTaskModal";
 import { UserAuth } from "../../context/AuthContext";
 import { fetchTasks, createTask, deleteTask, markComplete } from "../../utils/taskService";
@@ -97,18 +97,17 @@ const Playground = () => {
   }, [tasks, activeLabel, sortMode]);
 
   return (
-    
-      <div className="max-h-screen-xl mx-auto px-4 pt-28 pb-10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-          <div>
+    <div className="max-h-screen-xl mx-auto px-4 pt-28 pb-10">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div>
           <h1 className="text-2xl font-semibold text-gray-900">Playground</h1>
           <p className="text-gray-600 dark:text-gray-300 text-sm">
             Create and manage your tasks here.
           </p>
-          </div>
-        
+        </div>
+
         <button
-        onClick={() => setOpen(true)}
+          onClick={() => setOpen(true)}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700
         text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300
         dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -116,11 +115,13 @@ const Playground = () => {
           <FaPlus className="text-sm" />
           New Task
         </button>
-        <AddNewTaskModal 
-        open={open} onClose={() => setOpen(false)} onCreate={handleCreate}/>
-        
+        <AddNewTaskModal
+          open={open}
+          onClose={() => setOpen(false)}
+          onCreate={handleCreate}
+        />
+      </div>
 
-        </div>
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => {
@@ -154,7 +155,6 @@ const Playground = () => {
           </button>
         ))}
 
-
         <button
           onClick={() => {
             setActiveLabel(null);
@@ -169,8 +169,6 @@ const Playground = () => {
         >
           Stack
         </button>
-
-        
 
         <button
           onClick={() => {
@@ -187,7 +185,114 @@ const Playground = () => {
           Deadline
         </button>
       </div>
-      </div>
+
+      {/* error */}
+      {error && (
+        <p
+          className="mb-4 text-center text-sm font-medium text-red-700 bg-red-100 border-red-300 rounded-md px-4 py-3 shadow-sm"
+        >
+          {error}
+        </p>
+      )}
+
+      {/* task */}
+      {loading ? (
+        <div className="text-center text-gray-600 py-16 ">
+          Loading Tasks ...
+        </div>
+      ) : FilteredTasks.length === 0 ? (
+        <div
+          className="text-center py-16 border-2 border-dashed rounded-xl border-gray-200
+  dark:border-gray-700"
+        >
+          <p className="text-gray-700 dark:text-gray-200 font-medium">
+            No Tasks Found
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Try Changing the Filter or Sort
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {FilteredTasks.map((task) => (
+            <div
+              className="relative rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition dark:bg-gray-900
+    dark:border-gray-700"
+              key={task.id}
+            >
+              {/* action */}
+              <div className="absolute top-3 right-3 flex gap-2">
+                <button
+                  onClick={() => handleTaskAction("complete", task.id)}
+                  title="Mark as Complete"
+                  className="text-gray-400 hover:text-green-500 transition"
+                >
+                  <FaCheckCircle />
+                </button>
+                <button
+                  onClick={() => handleTaskAction("delete", task.id)}
+                  title="Delete Task"
+                  className="text-gray-400 hover:text-red-500 transition"
+                >
+                  <FaTrashAlt />
+                </button>
+              </div>
+
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {task.title}
+              </h3>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                {task.description}
+              </p>
+              {(task.labels || []).length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {task.labels.map((label, i) => (
+                    <span
+                      key={i}
+                      className="text-[10px] font-semibold px-2 py-1 rounded bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {task.priority && (
+                <span
+                  className={`inline-block mt-2 px-2 text-xs font-medium rounded-full
+                ${
+                  task.priority === "Priority & Important"
+                    ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200"
+                    : task.priority === "Not Priority & Important"
+                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200"
+                    : task.priority === "Priority & Not Important"
+                    ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200"
+                    : "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-200"
+                }`}
+                >
+                  {task.priority}
+                </span>
+              )}
+
+              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                <div>
+                  <strong>Start :</strong>{" "}
+                  {task.start_date
+                    ? new Date(task.start_date).toLocaleString()
+                    : "-"}
+                </div>
+                <div>
+                  <strong>End :</strong>{" "}
+                  {task.end_date
+                    ? new Date(task.end_date).toLocaleString()
+                    : "-"}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
