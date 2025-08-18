@@ -203,15 +203,16 @@ const AddNewTaskModal = ({ open, onClose, onCreate }) => {
                 <div>
                     <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>End Date<span className='text-red-500'>*</span></label>
                     <input
-                    type="datetime-local"
-                    name="end_Date"
-                    value={form.end_Date}
-                    onChange={handleChange}
-                    required
-                    className='mt-1 w-full rounded-md border border-gray-300 dark:border-gray-700
-                     bg-white dark:bg-gray-800 px-3 py-2 text-sm outline-none focus:ring-2
-                      focus:ring-blue-500'
-                    />
+  type="datetime-local"
+  name="end_date"           
+  value={form.end_date}     
+  onChange={handleChange}
+  required
+  className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-700
+    bg-white dark:bg-gray-800 px-3 py-2 text-sm outline-none focus:ring-2
+    focus:ring-blue-500"
+/>
+
                 </div>
 
                 {/*Error Message*/}

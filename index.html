@@ -5,21 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Task App</title>
 
-    <!--Favicon / Icon-->
-    <link rel="Icon" href="/TaskDesk.png" type="image/png"/>
+    <!-- ✅ Favicon / Icon -->
+    <link rel="icon" href="/TaskDesk.png" type="image/png"/>
     <link rel="apple-touch-icon" href="/TaskDesk.png" />
 
-    <!--Social (Open Graph)-->
+    <!-- ✅ Social (Open Graph) -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Task App" />
     <meta property="og:description" content="A simple task management app" />
     <meta property="og:image" content="/TaskDesk.png" />
     <meta property="og:url" content="/" />
-    <meta name="twitter:card" content="summary" />
+
+    <!-- ✅ Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script src="./node_modules/flowbite/dist/flowbite.min.js"></script>
+
+    <!-- ✅ Flowbite (use CDN instead of node_modules path) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
   </body>
 </html>

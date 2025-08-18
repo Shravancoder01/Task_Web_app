@@ -9,26 +9,29 @@ const Navbar = () => {
    dark:bg-gray-900 dark:border-gray-700">
       <div className="max-h-screen xl:mx-auto flex flex-wrap items-center justify-between p-4">
 
+        {/* Logo */}
         <Link to="/" className='flex items-center space-x-2'>
           <img src={TDLogo} alt="Logo" className="h-8" />
-            <span className="text-2xl font-semibold whitespace-nowrap dark:text-white">
-             Task Desk
+          <span className="text-2xl font-semibold whitespace-nowrap dark:text-white">
+            Task Desk
           </span>
         </Link>
 
+        {/* Right side */}
         <div className="flex items-center space-x-4 md:order-2">
           <Link to="/playground" className="px-4 py-2 text-sm font-medium text-white bg-blue-700
         rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4
         focus:ring-blue-300 dark:bg-blue-600">
             Playground
           </Link>
+
+          {/* Mobile toggle button */}
           <button onClick={() => setOpen(!open)}
             className="md:hidden p-2 text-gray-500 rounded-lg hover:bg-gray-100
         focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400
         dark:hover:bg-gray-700 dark:focus:ring-gray-600"
             aria-label="Toggle Menu"
             aria-expanded={open}
-
           >
             <svg className="w-5 h-5"
               fill="none"
@@ -43,13 +46,15 @@ const Navbar = () => {
               />
             </svg>
           </button>
+
+          {/* Collapsible Menu */}
           <div
             className={`w-full md:w-auto md:order-1 md:flex md:items-center
         ${open ? "block" : "hidden"}
         `}
           >
             <ul className="flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 font-medium">
-              {["signin", "signup", "dashboard"].map((item) => (
+              {["signin", "signup", "dashboard", "calendar", "focus", "notes"].map((item) => (
                 <li key={item}>
                   <Link
                     to={`/${item}`}
